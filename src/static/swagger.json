@@ -1,0 +1,666 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Vlad Pavliuk",
+    "version": "1.0.0",
+    "title": "Forum Swagger test",
+    "contact": {
+      "email": "-"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "Forum",
+      "description": "Example API for requesting and return forum's posts, branches, threads"
+    }
+  ],
+  "paths": {
+    "/threads": {
+      "get": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Get threads",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Create a new thread",
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post_thread"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/threads"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/threads/{thread_id}": {
+      "get": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Get branches into thread by thread id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the thread"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/thread_by_id"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Create a new branch into thread",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the thread"
+          }
+        ],
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post_branch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Patch thread info",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the thread"
+          }
+        ],
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post_branch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Thread"
+        ],
+        "summary": "Delete thread",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the thread"
+          }
+        ],
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post_branch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/branches/{branch_id}": {
+      "get": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Get branch details by ID",
+        "parameters": [
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "integer",
+            "description": "Offset for paginated results"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Create a new post in branch",
+        "parameters": [
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch"
+          },
+          {
+            "name": "page",
+            "in": "path",
+            "required": false,
+            "type": "integer",
+            "description": "page of branch, one page contain 30 posts"
+          }
+        ],
+        "requestBody": {
+          "description": "Film Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/post"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Patch branch by id",
+        "parameters": [
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch"
+          }
+        ],
+        "requestBody": {
+          "description": "Branch Request patch Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/branch_patch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Branches"
+        ],
+        "summary": "Delete branch by id",
+        "parameters": [
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch"
+          }
+        ],
+        "requestBody": {
+          "description": "Branch Request patch Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/branch_patch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "get user info by user id",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the thread"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login",
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login_form"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Registration new user",
+        "requestBody": {
+          "description": "Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/register_form"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "threads": {
+        "type": "object",
+        "properties": {
+          "threads": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "thread_name": {
+                  "type": "string",
+                  "format": "string"
+                },
+                "thread_id": {
+                  "type": "number"
+                },
+                "creator_id": {
+                  "type": "number"
+                },
+                "create_date": {
+                  "type": "string",
+                  "format": "string"
+                },
+                "branch_count": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "thread_by_id": {
+        "type": "object",
+        "properties": {
+          "thread_name": {
+            "type": "string",
+            "format": "string"
+          },
+          "thread_id": {
+            "type": "number"
+          },
+          "creator_id": {
+            "type": "number"
+          },
+          "create_date": {
+            "type": "string",
+            "format": "string"
+          },
+          "branch_count": {
+            "type": "number"
+          },
+          "branches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "branch_name": {
+                  "type": "string",
+                  "format": "string"
+                },
+                "thread_id": {
+                  "type": "number"
+                },
+                "creator_id": {
+                  "type": "number"
+                },
+                "create_date": {
+                  "type": "string",
+                  "format": "string"
+                },
+                "post_count": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post_thread": {
+        "type": "object",
+        "properties": {
+          "thread_name": {
+            "type": "string",
+            "format": "string"
+          }
+        }
+      },
+      "thread_patch": {
+        "type": "object",
+        "properties": {
+          "thread_name": {
+            "type": "string",
+            "example": "Renamed thread"
+          },
+          "user_id": {
+            "type": "number",
+            "example": -1
+          }
+        }
+      },
+      "branch_by_id": {
+        "type": "object",
+        "properties": {
+          "branch_name": {
+            "type": "string",
+            "format": "string"
+          },
+          "thread_id": {
+            "type": "number"
+          },
+          "creator_id": {
+            "type": "number"
+          },
+          "create_date": {
+            "type": "string",
+            "format": "string"
+          },
+          "post_count": {
+            "type": "number"
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "format": "string"
+                },
+                "user_id": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post_branch": {
+        "type": "object",
+        "properties": {
+          "branch_name": {
+            "type": "string",
+            "format": "string"
+          },
+          "user_id": {
+            "type": "number"
+          }
+        }
+      },
+      "branch_patch": {
+        "type": "object",
+        "properties": {
+          "branch_name": {
+            "type": "string",
+            "example": "Renamed branch"
+          },
+          "user_id": {
+            "type": "number",
+            "example": -1
+          }
+        }
+      },
+      "post": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "format": "string"
+          },
+          "user_id": {
+            "type": "number"
+          }
+        }
+      },
+      "login_form": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "string"
+          },
+          "login": {
+            "type": "string",
+            "format": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "string"
+          }
+        }
+      },
+      "register_form": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "string"
+          }
+        }
+      }
+    }
+  }
+}
