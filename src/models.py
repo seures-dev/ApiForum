@@ -64,22 +64,6 @@ class Branch(db.Model):
 
 	posts = relationship("Post")
 
-	def check_access(self, user_id):
-		access = self.access_list
-		if isinstance(self.access_list, str):
-			access = json.loads(self.access_list)
-		if user_id in access["baned"]:
-			return False
-		if user_id in access["access"]:
-			return True
-		return False
-
-	def moderators_right(self, user_id):
-		access = json.loads(self.access_list)
-		if user_id in access["moderators"]:
-			return True
-		return False
-
 	def __init__(self, thread_id, creator, delta_time=0, name=None):
 
 		self.thread_id = thread_id
@@ -93,14 +77,16 @@ class Branch(db.Model):
 	def __repr__(self):
 		return f"Post: {self.id},  {self.intobranch_id},  {self.creator_id},  {self.created_date}\n content:{self.content}"
 
+
+
 	def get_posts(self, offset=0, all_post=None):
+		if self.message_count < 1:
+			return []
 		if all_post:
-			return db.session.query(Post).filter_by(branch_id=self.id).all()
+			return Post.query.filter_by(branch_id=self.id).all()
 		if offset == 0:
-			return db.session.query(Post).filter_by(branch_id=self.id).order_by(Post.created_date).\
-				limit(60).all()
-		return db.session.query(Post).filter_by(branch_id=self.id).order_by(Post.created_date)\
-			.offset(offset).limit(60).all()
+			return Post.query.filter_by(branch_id=self.id).order_by(Post.created_date).limit(30).all()
+		return Post.query.filter_by(branch_id=self.id).order_by(Post.created_date).offset(offset).limit(30).all()
 
 	def to_dict(self):
 		data = {

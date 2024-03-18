@@ -9,7 +9,7 @@ from src import api
 
 api.add_resource(Smoke, "/smoke", strict_slashes=False)
 api.add_resource(Posts,  "/posts/<int:post_id>/<int:branch_id>", strict_slashes=False)
-api.add_resource(Branches, "/branches", "/branches/<int:branch_id>/", "/branches/<int:branch_id>/<int:page>", )
+api.add_resource(Branches, "/branches", "/branches/<int:branch_id>/")
 api.add_resource(Threads,  "/threads", "/threads/<int:thread_id>", strict_slashes=False)
 api.add_resource(Users, "/login", "/register", "/users/<user_id>", strict_slashes=False)
 

@@ -126,7 +126,6 @@ class Threads(Resource):
 			return thread.to_dict(), 200
 		return {"Message": "No changes were made to the resource"}, 200
 
-
 	def delete(self, thread_id):
 		parser = reqparse.RequestParser()
 		parser.add_argument("user_id", type=int, help="user_id — number, which is the user's unique identifier",
