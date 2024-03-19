@@ -5,23 +5,28 @@ from src.models import Post, User
 
 class Posts(Resource):
 
-	def get(self, post_id, branch_id):
+	def get(self, post_id: int, branch_id=None):
 
 		get_count = request.args.get('get_count', default=None)
 		if get_count:
-			count = count = Post.query.count()
-			return {"post_count": count,"chunk_size": 2000}, 200
-		get_all = request.args.get('getall', default=None)
-		if get_all:
+			count = Post.query.count()
+			return {"post_count": count, "chunk_size": 2000}, 200
+		get_all = request.args.get('getall', default=0, type=int)
+		if get_all:  # returns by list[post*2000]
 			get_all_int = int(get_all)
 			branches = Post.query.order_by(Post.u_id).offset(get_all_int * 2000).limit(2000).all()
-			return [x.to_dict() for x in branches]
-		post = db.session.query(Post).filter_by(branch_id=branch_id, into_branch_id=post_id).first()
-		if not post:
-			return {"Error": "Post doesn't exist"}
-		return post.to_dict()
+			return [x.to_dict() for x in branches], 200
 
-	def patch(self, post_id, branch_id):
+		if branch_id is None:
+			post = Post.query.filter_by(u_id=post_id).first()
+		else:
+			post = Post.query.filter_by(branch_id=branch_id, into_branch_id=post_id).first()
+
+		if not post:
+			return {"Error": "Post doesn't exist"}, 400
+		return post.to_dict(), 200
+
+	def patch(self, post_id, branch_id=None):
 
 		parser = reqparse.RequestParser()
 		parser.add_argument("user_id", type=int, help="user_id — number, which is the user's unique identifier",
@@ -39,7 +44,11 @@ class Posts(Resource):
 		if not user:
 			return {"Error": "Unknown user"}, 401
 
-		post = db.session.query(Post).filter_by(branch_id=branch_id, into_branch_id=post_id).first()
+		if branch_id is None:
+			post = Post.query.filter_by(u_id=post_id).first()
+		else:
+			post = Post.query.filter_by(branch_id=branch_id, into_branch_id=post_id).first()
+
 
 		if user.user_id != post.creator_id and user.access_level < 2:
 			return {"Error": "Not enough rights"}, 402
@@ -54,13 +63,17 @@ class Posts(Resource):
 			return {"Message": "Updated successfully"}, 200
 		return {"Message": "No changes were made to the resource"}, 200
 
-	def delete(self, branch_id, post_id):
-		post = db.session.query(Post).filter_by(branch_id=branch_id, into_branch_id=post_id).first()
+	def delete(self, post_id, branch_id=None):
+		if branch_id is None:
+			post = Post.query.filter_by(u_id=post_id).first()
+		else:
+			post = Post.query.filter_by(branch_id=branch_id, into_branch_id=post_id).first()
+
 		if not post:
 			return {"Messagef": "Post doesn't exist"}, 404
 		db.session.delete(post)
 		db.session.commit()
-		return {"Message": "Updated successfully"}, 204
+		return {"Message": "Delete successfully"}, 204
 
 
 

@@ -354,6 +354,75 @@
         }
       }
     },
+    "/posts/{post_id}": {
+      "get": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "get user info by user id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "UID of the post"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/posts/{post_id}/{branch_id}": {
+      "get": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "get user info by user id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Post id into the branch"
+          },
+           {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch where post exist"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
     "/users/{user_id}": {
       "get": {
         "tags": [
@@ -630,7 +699,7 @@
       "login_form": {
         "type": "object",
         "properties": {
-          "email": {
+          "e_mail": {
             "type": "string",
             "format": "string"
           },
@@ -651,7 +720,7 @@
             "type": "string",
             "format": "string"
           },
-          "email": {
+          "e_mail": {
             "type": "string",
             "format": "string"
           },

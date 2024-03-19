@@ -354,6 +354,156 @@
         }
       }
     },
+    "/posts/{post_id}": {
+      "get": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "get user info by user id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "UID of the post"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "Delete post by u_id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch"
+          }
+        ],
+        "requestBody": {
+          "description": "Branch Request patch Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/branch_patch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
+    "/posts/{post_id}/{branch_id}": {
+      "get": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "get user info by user id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Post id into the branch"
+          },
+           {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch where post exist"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Thread created",
+            "schema": {
+              "$ref": "#/components/schemas/branch"
+            }
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "POSTS"
+        ],
+        "summary": "Delete post by u_id",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Post id into the branch"
+          },
+           {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the branch where post exist"
+          }
+        ],
+        "requestBody": {
+          "description": "Branch Request patch Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/branch_patch"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Failed. Wrong data."
+          }
+        }
+      }
+    },
     "/users/{user_id}": {
       "get": {
         "tags": [
