@@ -42,12 +42,10 @@ class Thread_(db.Model):
 	
 	def get_branches(self, offset=0, all_branches=None):
 		if all_branches:
-			return db.session.query(Branch).filter_by(thread_id=self.thread_id).all()
+			return Branch.query.filter_by(thread_id=self.thread_id).all()
 		if offset == 0:
-			return db.session.query(Branch).filter_by(thread_id=self.thread_id).order_by(Branch.id).limit(
-				30).all()
-		return db.session.query(Branch).filter_by(thread_id=self.thread_id).order_by(Branch.id).offset(
-			offset).limit(30).all()
+			return Branch.query.filter_by(thread_id=self.thread_id).order_by(Branch.id).limit(30).all()
+		return Branch.query.filter_by(thread_id=self.thread_id).order_by(Branch.id).offset(offset).limit(30).all()
 
 
 class Branch(db.Model):
@@ -112,10 +110,10 @@ class Post(db.Model):
 	content = Column(Text, nullable=False)
 	extra = Column(JSON)
 
-	def __init__(self, b_id, ib_id, creator, content, u_id=-1, delta_time=0):
+	def __init__(self, b_id,  creator, content, delta_time=0):
 
 		self.branch_id = b_id
-		self.into_branch_id = ib_id
+		self.into_branch_id = 1
 		self.creator_id = creator
 		time_ = time.time() - delta_time
 		self.created_date = datetime.fromtimestamp(time_)

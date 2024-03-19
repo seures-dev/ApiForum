@@ -62,25 +62,34 @@ def create_triggers(ses):
         EXECUTE FUNCTION trg_increm_branches_count();
         ''',
         '''
-            CREATE OR REPLACE FUNCTION trg_set_into_branch_id()
-            RETURNS TRIGGER AS $$
-            BEGIN
+        CREATE OR REPLACE FUNCTION trg_set_into_branch_id()
+        RETURNS TRIGGER AS $$
+        DECLARE
+            TEMP INTEGER;
+        BEGIN
+            SELECT COALESCE(MAX(into_branch_id), 0) INTO TEMP
+            FROM posts
+            WHERE branch_id = NEW.branch_id;
+        
+            IF TEMP >= (SELECT message_count FROM branches WHERE id = NEW.branch_id) THEN
+                NEW.into_branch_id := TEMP + 1;
+            ELSE
                 NEW.into_branch_id := (SELECT message_count FROM branches WHERE id = NEW.branch_id) + 1;
-                
-                UPDATE branches
-                SET message_count = message_count + 1
-                WHERE id = NEW.branch_id
-                AND EXISTS (SELECT 1 FROM branches WHERE id = NEW.branch_id);
-                RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-            
-            CREATE TRIGGER set_into_branch_id
-            BEFORE INSERT ON posts
-            FOR EACH ROW
-            EXECUTE FUNCTION trg_set_into_branch_id();
-
-
+            END IF;
+        
+            UPDATE branches
+            SET message_count = message_count + 1
+            WHERE id = NEW.branch_id
+            AND EXISTS (SELECT 1 FROM branches WHERE id = NEW.branch_id);
+        
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+        
+        CREATE TRIGGER set_into_branch_id
+        BEFORE INSERT ON posts
+        FOR EACH ROW
+        EXECUTE FUNCTION trg_set_into_branch_id();
         ''',
            ]
 
@@ -131,7 +140,7 @@ def create_test_data():
         branches = []
         threads = []
         print("Creating threads to insert")
-        for i in range(70):
+        for i in range(42):
             # print(i,"=",(120*100000)-(i+1)*100000)
             tname = generate_random_string(random.randint(20, 28))
             threads.append(Thread_(delta_time=(120 * 100000) - (i + 1) * 100000, name=tname))
@@ -153,8 +162,8 @@ def create_test_data():
 
         )
         print("Creating branches to insert")
-        for i in range(120 * 5):
-            random_number = random.randint(1, 70)
+        for i in range(40 * 5):
+            random_number = random.randint(1, 42)
             random_creator = random.randint(1, 4)
             bname = generate_random_string(random.randint(20, 28))
             branches.append(Branch(thread_id=random_number, creator=random_creator,
@@ -162,7 +171,6 @@ def create_test_data():
         print(f"Created {len(branches)} branches to insert")
         post1 = Post(
             b_id=3,
-            ib_id=1,
             creator=1,
             delta_time=5 * (10 ** 6),
             content="its first post"
@@ -170,7 +178,6 @@ def create_test_data():
 
         post2 = Post(
             b_id=1,
-            ib_id=2,
             creator=1,
             delta_time=4 * (10 ** 6),
             content="post"
@@ -178,7 +185,6 @@ def create_test_data():
 
         post3 = Post(
             b_id=1,
-            ib_id=3,
             creator=1,
             delta_time=3 * (10 ** 6),
             content="post"
@@ -186,14 +192,12 @@ def create_test_data():
 
         post4 = Post(
             b_id=1,
-            ib_id=4,
             creator=2,
             delta_time=2 * (10 ** 6),
             content="post"
         )
         post5 = Post(
             b_id=2,
-            ib_id=5,
             creator=2,
             delta_time=0,
             content="post"
@@ -214,13 +218,13 @@ def create_test_data():
         #             random.randint(1, 30)) + generate_random_string(random.randint(1, 30))
         #     ))
         print("Creating post to insert")
-        for i in range(120 * 5 * 50 * 10):
-            random_branch = random.randint(1, 120 * 5)
+        for i in range(120 * 5 * 50):# * 10):
+            random_branch = random.randint(1, 200)
             random_creator = random.randint(1, 4)
 
             posts_list.append(Post(
                 b_id=random_branch,
-                ib_id=6 + i,
+
                 creator=random_creator,
                 delta_time=0,
                 content=generate_random_string(random.randint(1, 30)) + " " + generate_random_string(

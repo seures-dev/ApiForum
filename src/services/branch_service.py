@@ -1,5 +1,5 @@
 from src.models import Branch, Post, User, db
-
+from sqlalchemy import asc
 
 class BranchService:
 
@@ -43,19 +43,16 @@ class BranchService:
         branch: Branch = Branch.query.filter_by(id=int(branch_id)).first()
         if not branch:
             return {"Error": "Branch not found"}, 404
-        into_branch_id = branch.message_count + 1
 
         try:
             post = Post(
                 b_id=branch.id,
-                u_id=1,
-                ib_id=into_branch_id,
                 content=message,
                 creator=user_id
             )
             db.session.add(post)
             db.session.commit()
-            offset = (into_branch_id // 30) * 30
+            offset = (post.into_branch_id // 30) * 30
             branch_dict = branch.to_dict()
             if branch.message_count < 1:
                 return branch_dict, 200
